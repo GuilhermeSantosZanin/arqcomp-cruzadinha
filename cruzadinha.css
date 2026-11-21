@@ -1,0 +1,408 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #090e1a;
+    color: #f1f5f9;
+}
+
+/* CABEÇALHO */
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 5%;
+    background: #0e1423;
+    border-bottom: 1px solid #253049;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 3px;
+}
+
+.logo span {
+    color: #a78bfa;
+}
+
+.tag {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #94a3b8;
+}
+
+/* INTRODUÇÃO */
+
+.introducao {
+    text-align: center;
+    padding: 65px 5% 40px;
+}
+
+.categoria {
+    background: #211b3d;
+    color: #bda5ff;
+    padding: 9px 17px;
+    border-radius: 30px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.introducao h1 {
+    font-size: 48px;
+    margin: 25px 0 15px;
+}
+
+.introducao h1 span {
+    color: #a78bfa;
+}
+
+.introducao p {
+    color: #94a3b8;
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+/* PLACAR */
+
+.placar {
+    width: 90%;
+    max-width: 1400px;
+    margin: 20px auto;
+    display: flex;
+    gap: 18px;
+}
+
+.card {
+    flex: 1;
+    background: #121a2c;
+    border: 1px solid #28334b;
+    border-radius: 14px;
+    padding: 22px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: #8b5cf6;
+}
+
+.card p {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-top: 0;
+}
+
+.card h2 {
+    color: #c4b5fd;
+    font-size: 30px;
+    margin-bottom: 0;
+}
+
+/* BARRA DE PROGRESSO */
+
+.progresso {
+    width: 90%;
+    max-width: 1400px;
+    height: 8px;
+    background: #202b40;
+    border-radius: 20px;
+    margin: 25px auto;
+    overflow: hidden;
+}
+
+#barra_progresso {
+    width: 0%;
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #7c3aed, #38bdf8);
+    transition: width 0.6s;
+}
+
+/* CONTEÚDO PRINCIPAL */
+
+main {
+    width: 90%;
+    max-width: 1400px;
+    display: flex;
+    align-items: flex-start;
+    gap: 25px;
+    margin: 30px auto;
+}
+
+.jogo, .pistas {
+    background: #121a2c;
+    border: 1px solid #28334b;
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.jogo {
+    flex: 2;
+    min-width: 0;
+}
+
+.pistas {
+    flex: 1;
+    min-width: 280px;
+}
+
+.titulo_secao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.titulo_secao h2 {
+    font-size: 22px;
+    margin: 0;
+}
+
+.titulo_secao span {
+    color: #a78bfa;
+    font-size: 12px;
+}
+
+/* TABULEIRO */
+
+.tabuleiro-area {
+    overflow: auto;
+    padding: 5px;
+}
+
+#tabuleiro {
+    display: grid;
+    grid-template-columns: repeat(19, 32px);
+    gap: 3px;
+    width: max-content;
+    margin: auto;
+}
+
+.casa {
+    width: 32px;
+    height: 32px;
+    position: relative;
+}
+
+.casa input {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #465775;
+    border-radius: 5px;
+    background: #202c42;
+    color: white;
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 7px 0 0;
+    outline: none;
+    transition: 0.2s;
+}
+
+.casa input:hover {
+    background: #303d58;
+    border-color: #a78bfa;
+}
+
+.casa input:focus {
+    border: 2px solid #a78bfa;
+    background: #382b60;
+    box-shadow: 0 0 10px #8b5cf680;
+}
+
+.numero {
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    font-size: 9px;
+    color: #c4b5fd;
+    pointer-events: none;
+}
+
+/* PISTAS */
+
+.pistas h3 {
+    color: #a78bfa;
+    margin-top: 25px;
+    font-size: 17px;
+}
+
+.pistas p {
+    background: #182237;
+    padding: 12px;
+    border-radius: 7px;
+    border-left: 3px solid #465775;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #cbd5e1;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.pistas p:hover {
+    background: #252d48;
+    border-left-color: #a78bfa;
+}
+
+.pistas b {
+    color: #c4b5fd;
+}
+
+/* RESPOSTAS */
+
+.casa input.correta {
+    background: #123e30;
+    border-color: #34d399;
+    color: #6ee7b7;
+    animation: acerto 0.4s;
+}
+
+.casa input.errada {
+    background: #481f30;
+    border-color: #fb7185;
+    color: #fda4af;
+}
+
+.pistas p.correta {
+    background: #123e30;
+    border-left-color: #34d399;
+    color: #6ee7b7;
+}
+
+.pistas p.errada {
+    background: #481f30;
+    border-left-color: #fb7185;
+    color: #fda4af;
+}
+
+@keyframes acerto {
+    0% {
+        transform: scale(0.85);
+    }
+
+    50% {
+        transform: scale(1.12);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* BOTÕES */
+
+.botoes {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+button {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.conferir {
+    background: linear-gradient(135deg, #7c3aed, #6366f1);
+    color: white;
+}
+
+.conferir:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 25px #7c3aed70;
+}
+
+.reiniciar {
+    color: #cbd5e1;
+    background: #263249;
+}
+
+.reiniciar:hover {
+    background: #384863;
+}
+
+button:active {
+    transform: scale(0.96);
+}
+
+/* MENSAGENS */
+
+#mensagem {
+    background: #1b263b;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 25px;
+    text-align: center;
+    color: #a5b4fc;
+    font-size: 14px;
+}
+
+#mensagem.vitoria {
+    background: #123e30;
+    border: 1px solid #34d399;
+    color: #6ee7b7;
+    animation: acerto 0.5s;
+}
+
+#mensagem.alerta {
+    background: #382b35;
+    color: #fda4af;
+}
+
+/* RODAPÉ */
+
+footer {
+    text-align: center;
+    padding: 30px;
+    margin-top: 50px;
+    background: #0e1423;
+    border-top: 1px solid #28334b;
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 1050px) {
+
+    main {
+        flex-direction: column;
+    }
+
+    .jogo, .pistas {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .placar {
+        flex-wrap: wrap;
+    }
+
+    .card {
+        min-width: 40%;
+    }
+
+    .introducao h1 {
+        font-size: 35px;
+    }
+
+    .tag {
+        display: none;
+    }
+}

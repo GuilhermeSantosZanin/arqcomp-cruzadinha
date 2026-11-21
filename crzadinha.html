@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechCross | Desafio Computacional</title>
+    <link rel="stylesheet" href="cruzadinha.css">
+</head>
+
+<body onload="montarJogo()">
+
+    <header>
+        <div class="logo">
+            TECH<span>CROSS</span>
+        </div>
+
+        <div class="tag">ARQUITETURA COMPUTACIONAL</div>
+    </header>
+
+    <section class="introducao">
+
+        <span class="categoria">DESAFIO DE CONHECIMENTO</span>
+
+        <h1>Você domina a <span>tecnologia?</span></h1>
+
+        <p>
+            Decifre as pistas, complete o tabuleiro
+            e mostre o que você sabe sobre computadores.
+        </p>
+
+    </section>
+
+    <section class="placar">
+
+        <div class="card">
+            <p>🎯 ACERTOS</p>
+            <h2 id="contador">0 / 16</h2>
+        </div>
+
+        <div class="card">
+            <p>⏱️ TEMPO DE JOGO</p>
+            <h2 id="tempo">00:00</h2>
+        </div>
+
+        <div class="card">
+            <p>⚡ SEU PROGRESSO</p>
+            <h2 id="porcentagem">0%</h2>
+        </div>
+
+        <div class="card">
+            <p>🏆 SEU NÍVEL</p>
+            <h2 id="nivel">Iniciante</h2>
+        </div>
+
+    </section>
+
+    <div class="progresso">
+        <div id="barra_progresso"></div>
+    </div>
+
+    <main>
+
+        <section class="jogo">
+
+            <div class="titulo_secao">
+                <h2>🧩 Tabuleiro</h2>
+                <span>16 desafios</span>
+            </div>
+
+            <div class="tabuleiro-area">
+                <div id="tabuleiro"></div>
+            </div>
+
+            <div id="mensagem">
+                Preencha o tabuleiro para começar!
+            </div>
+
+            <div class="botoes">
+                <button class="conferir" onclick="conferir()">
+                    ✓ Conferir respostas
+                </button>
+
+                <button class="reiniciar" onclick="reiniciar()">
+                    ↻ Reiniciar
+                </button>
+            </div>
+
+        </section>
+
+        <section class="pistas">
+
+            <div class="titulo_secao">
+                <h2>📋 Pistas</h2>
+            </div>
+
+            <h3>→ Horizontais</h3>
+            <div id="horizontais"></div>
+
+            <h3>↓ Verticais</h3>
+            <div id="verticais"></div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>TECHCROSS — Desafie seus conhecimentos.</p>
+        <p>Arquitetura Computacional | SPTech</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+
+<script>
+
+    var palavras = [
+        ['REGISTRADORES', 0, 12, 'V',
+            'Pequenas unidades internas do processador que guardam informações utilizadas imediatamente.'],
+
+        ['EEPROM', 1, 12, 'H',
+            'Permite apagar e regravar informações eletricamente, geralmente byte a byte.'],
+
+        ['RAM', 1, 15, 'V',
+            'Guarda informações temporariamente e perde seu conteúdo sem energia.'],
+
+        ['DUALCORE', 2, 4, 'V',
+            'Processador que possui dois núcleos de processamento.'],
+
+        ['QUADCORE', 2, 6, 'V',
+            'Processador que possui quatro núcleos de processamento.'],
+
+        ['UC', 3, 6, 'H',
+            'Coordena a execução das instruções e controla os componentes do processador.'],
+
+        ['MEMORIADEMASSA', 4, 14, 'V',
+            'Guarda grandes quantidades de arquivos e programas mesmo sem energia.'],
+
+        ['DMA', 5, 6, 'H',
+            'Permite transferências entre dispositivos e memória principal sem intervenção constante do processador.'],
+
+        ['MICROCONTROLADOR', 7, 0, 'H',
+            'Integra processador, memória e periféricos em um único chip.'],
+
+        ['CACHE', 7, 2, 'V',
+            'Guarda informações frequentemente acessadas para acelerar o processamento.'],
+
+        ['ROM', 7, 9, 'V',
+            'Guarda instruções permanentes que normalmente são apenas consultadas.'],
+
+        ['DATABUS', 12, 9, 'V',
+            'Transporta informações entre o processador, a memória e outros componentes.'],
+
+        ['FLASH', 13, 7, 'H',
+            'Tecnologia não volátil utilizada em pendrives, com apagamento realizado em blocos.'],
+
+        ['CPU', 13, 17, 'V',
+            'Componente responsável por executar instruções e processar informações do computador.'],
+
+        ['ADDRESSBUS', 15, 9, 'H',
+            'Transporta a localização que o processador deseja acessar na memória.'],
+
+        ['ULA', 17, 12, 'H',
+            'Parte do processador responsável por realizar cálculos e operações lógicas.']
+    ];
+
+    var numeros = [];
+    var linhas = 19;
+    var colunas = 19;
+
+    var segundos = 0;
+    var cronometro;
+    var jogando = false;
+    var finalizado = false;
+
+
+    // IDENTIFICAR A POSIÇÃO DAS CASAS
+
+    function idCasa(i, j) {
+
+        var linha = palavras[i][1];
+        var coluna = palavras[i][2];
+
+        if (palavras[i][3] == 'H') {
+            coluna += j;
+        } else {
+            linha += j;
+        }
+
+        return 'casa_' + linha + '_' + coluna;
+    }
+
+
+    // MONTAR O TABULEIRO
+
+    function montarJogo() {
+
+        var casas = [];
+        var inicios = [];
+
+        for (var i = 0; i < palavras.length; i++) {
+
+            var inicio = idCasa(i, 0);
+
+            if (!inicios.includes(inicio)) {
+                inicios.push(inicio);
+            }
+
+            numeros[i] = inicios.indexOf(inicio) + 1;
+
+            for (var j = 0; j < palavras[i][0].length; j++) {
+                casas.push(idCasa(i, j));
+            }
+        }
+
+        var html = '';
+
+        for (var l = 0; l < linhas; l++) {
+
+            for (var c = 0; c < colunas; c++) {
+
+                var id = 'casa_' + l + '_' + c;
+
+                html += '<div class="casa">';
+
+                if (casas.includes(id)) {
+
+                    if (inicios.includes(id)) {
+
+                        html += '<span class="numero">' +
+                            (inicios.indexOf(id) + 1) +
+                            '</span>';
+                    }
+
+                    html += '<input id="' + id +
+                        '" maxlength="1" autocomplete="off"' +
+                        ' oninput="editar(this)">';
+                }
+
+                html += '</div>';
+            }
+        }
+
+        document.getElementById('tabuleiro').innerHTML = html;
+
+        var horizontal = '';
+        var vertical = '';
+
+        for (var i = 0; i < palavras.length; i++) {
+
+            var pista = '<p id="pista_' + i +
+                '" onclick="selecionarPalavra(' + i + ')">' +
+                '<b>' + numeros[i] + '.</b> ' +
+                palavras[i][4] + '</p>';
+
+            if (palavras[i][3] == 'H') {
+
+                horizontal += pista;
+
+            } else {
+
+                vertical += pista;
+            }
+        }
+
+        document.getElementById('horizontais').innerHTML = horizontal;
+        document.getElementById('verticais').innerHTML = vertical;
+    }
+
+
+    // SELECIONAR UMA PALAVRA AO CLICAR NA PISTA
+
+    function selecionarPalavra(i) {
+
+        document.getElementById(idCasa(i, 0)).focus();
+    }
+
+
+    // EDITAR AS CASAS
+
+    function editar(casa) {
+
+        casa.value = casa.value.toUpperCase();
+
+        if (casa.value != '' &&
+            !'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.includes(casa.value)) {
+
+            casa.value = '';
+        }
+
+        if (jogando == false && finalizado == false &&
+            casa.value != '') {
+
+            iniciarTempo();
+        }
+
+        limparMarcacoes();
+        atualizarPlacar(0);
+
+        document.getElementById('mensagem').className = '';
+
+        document.getElementById('mensagem').innerText =
+            'Continue preenchendo as palavras!';
+    }
+
+
+    // INICIAR O CRONÔMETRO
+
+    function iniciarTempo() {
+
+        jogando = true;
+
+        cronometro = setInterval(function () {
+
+            segundos++;
+
+            atualizarTempo();
+
+        }, 1000);
+    }
+
+
+    // ATUALIZAR O TEMPO
+
+    function atualizarTempo() {
+
+        var minutos = Math.floor(segundos / 60);
+        var resto = segundos % 60;
+
+        if (minutos < 10) {
+            minutos = '0' + minutos;
+        }
+
+        if (resto < 10) {
+            resto = '0' + resto;
+        }
+
+        document.getElementById('tempo').innerText =
+            minutos + ':' + resto;
+    }
+
+
+    // LIMPAR AS MARCAÇÕES
+
+    function limparMarcacoes() {
+
+        for (var i = 0; i < palavras.length; i++) {
+
+            document.getElementById('pista_' + i).className = '';
+
+            for (var j = 0; j < palavras[i][0].length; j++) {
+
+                document.getElementById(idCasa(i, j)).className = '';
+            }
+        }
+    }
+
+
+    // ATUALIZAR O PLACAR
+
+    function atualizarPlacar(acertos) {
+
+        var porcentagem = Math.round(
+            acertos / palavras.length * 100
+        );
+
+        document.getElementById('contador').innerText =
+            acertos + ' / ' + palavras.length;
+
+        document.getElementById('porcentagem').innerText =
+            porcentagem + '%';
+
+        document.getElementById('barra_progresso').style.width =
+            porcentagem + '%';
+
+        if (acertos <= 4) {
+
+            document.getElementById('nivel').innerText =
+                'Iniciante';
+
+        } else if (acertos <= 8) {
+
+            document.getElementById('nivel').innerText =
+                'Aprendiz';
+
+        } else if (acertos <= 12) {
+
+            document.getElementById('nivel').innerText =
+                'Avançado';
+
+        } else if (acertos <= 15) {
+
+            document.getElementById('nivel').innerText =
+                'Especialista';
+
+        } else {
+
+            document.getElementById('nivel').innerText =
+                'Mestre';
+        }
+    }
+
+
+    // CONFERIR RESPOSTAS
+
+    function conferir() {
+
+        limparMarcacoes();
+
+        var acertos = 0;
+
+        for (var i = 0; i < palavras.length; i++) {
+
+            var resposta = palavras[i][0];
+            var correta = true;
+
+            for (var j = 0; j < resposta.length; j++) {
+
+                var casa = document.getElementById(idCasa(i, j));
+
+                if (casa.value != resposta[j]) {
+
+                    correta = false;
+
+                    casa.className = 'errada';
+
+                } else {
+
+                    casa.className = 'correta';
+                }
+            }
+
+            if (correta == true) {
+
+                acertos++;
+
+                document.getElementById('pista_' + i).className =
+                    'correta';
+
+            } else {
+
+                document.getElementById('pista_' + i).className =
+                    'errada';
+            }
+        }
+
+        atualizarPlacar(acertos);
+
+        var mensagem = document.getElementById('mensagem');
+
+        mensagem.className = '';
+
+        if (acertos == palavras.length) {
+
+            clearInterval(cronometro);
+
+            jogando = false;
+            finalizado = true;
+
+            mensagem.innerText =
+                '🏆 Parabéns! Você é o Mestre da Arquitetura Computacional!';
+
+            mensagem.className = 'vitoria';
+
+            var inputs = document.getElementById('tabuleiro')
+                .getElementsByTagName('input');
+
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].disabled = true;
+            }
+
+        } else if (acertos == 0) {
+
+            mensagem.innerText =
+                'Nenhuma palavra correta ainda. Continue tentando!';
+
+            mensagem.className = 'alerta';
+
+        } else if (acertos < 8) {
+
+            mensagem.innerText =
+                'Você acertou ' + acertos +
+                ' palavras. Continue evoluindo!';
+
+        } else if (acertos < 13) {
+
+            mensagem.innerText =
+                '🔥 Muito bem! Você está avançando no desafio.';
+
+        } else {
+
+            mensagem.innerText =
+                '🚀 Falta pouco! Você está perto de completar o jogo.';
+        }
+    }
+
+
+    // REINICIAR O JOGO
+
+    function reiniciar() {
+
+        clearInterval(cronometro);
+
+        segundos = 0;
+        jogando = false;
+        finalizado = false;
+
+        for (var i = 0; i < palavras.length; i++) {
+
+            for (var j = 0; j < palavras[i][0].length; j++) {
+
+                var casa = document.getElementById(idCasa(i, j));
+
+                casa.value = '';
+                casa.disabled = false;
+            }
+        }
+
+        limparMarcacoes();
+        atualizarTempo();
+        atualizarPlacar(0);
+
+        document.getElementById('mensagem').className = '';
+
+        document.getElementById('mensagem').innerText =
+            'Nova partida iniciada. Boa sorte!';
+    }
+</script>
